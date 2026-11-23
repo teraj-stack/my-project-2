@@ -1,1 +1,1 @@
-{"v":1,"room":"ecbd53ce-afa0-47e8-9341-f0b00e45de1b","lastSeq":0,"answered":[],"handled":[],"cancelled":[],"msgChat":[],"inflight":[],"replies":[],"roomChats":[]}
+{"v":1,"room":"ecbd53ce-afa0-47e8-9341-f0b00e45de1b","lastSeq":5,"answered":["c320b29a-c673-4edc-b724-c086d62b9c15"],"handled":[],"cancelled":[],"msgChat":[["c320b29a-c673-4edc-b724-c086d62b9c15",{"chatId":"3974f9fd-f28b-4d09-a2fb-d84adcb60aee","id":"c320b29a-c673-4edc-b724-c086d62b9c15"}]],"inflight":[],"replies":[],"roomChats":[["3974f9fd-f28b-4d09-a2fb-d84adcb60aee",{"name":"<# ~$ bash >`.html> <~$ bash"}]]}
