@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="pl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>gifkit Studio — Wideo na GIF w przeglądarce</title>
+	<link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+	<div class="app-shell">
+		<header class="app-header">
+			<div class="brand">
+				<span class="brand-badge" aria-hidden="true">GIF</span>
+				<div>
+					<h1>gifkit Studio</h1>
+					<p class="subtitle">Konwerter Wideo → GIF i optymalizator GIF działający w 100% lokalnie w przeglądarce</p>
+				</div>
+			</div>
+
+			<div class="mode-switch" role="tablist" aria-label="Tryb pracy">
+				<button id="mode-video-btn" class="mode-btn is-active" type="button" role="tab" aria-selected="true">
+					Wideo → GIF
+				</button>
+				<button id="mode-gif-btn" class="mode-btn" type="button" role="tab" aria-selected="false">
+					Optymalizator GIF
+				</button>
+			</div>
+		</header>
+
+		<main class="main-content">
+			<section id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Wybierz lub przeciągnij plik">
+				<input id="file-input" type="file" accept="video/*,.mp4,.webm,.mov,.m4v" hidden>
+				<div class="dropzone-icon" aria-hidden="true">🎬</div>
+				<h2 id="dropzone-title">Przeciągnij plik wideo tutaj</h2>
+				<p id="dropzone-subtitle">lub kliknij, aby wybrać (.mp4, .webm, .mov) — plik nie opuszcza Twojego urządzenia</p>
+			</section>
+
+			<div id="error-banner" class="error-banner" role="alert" hidden></div>
+
+			<section id="workspace" class="workspace" hidden>
+				<div class="workspace-topbar">
+					<div class="file-summary">
+						<strong id="file-name">video.mp4</strong>
+						<span id="file-meta" class="muted"></span>
+					</div>
+					<button id="change-file-btn" class="btn btn-secondary" type="button">Zmień plik</button>
+				</div>
+
+				<div class="workspace-grid">
+					<div class="panel preview-panel">
+						<h3>Podgląd źródła</h3>
+
+						<div id="video-preview-wrap" class="media-wrap">
+							<video id="source-video" controls playsinline muted></video>
+
+							<div class="trim-box">
+								<div class="trim-header">
+									<span>Przycinanie zakresu</span>
+									<span id="trim-duration-label" class="pill">0:00.0</span>
+								</div>
+								<div class="trim-row">
+									<label for="trim-start-range">Start: <strong id="trim-start-label">0:00.0</strong></label>
+									<input id="trim-start-range" type="range" min="0" max="10" step="0.1" value="0">
+								</div>
+								<div class="trim-row">
+									<label for="trim-end-range">Koniec: <strong id="trim-end-label">0:00.0</strong></label>
+									<input id="trim-end-range" type="range" min="0" max="10" step="0.1" value="10">
+								</div>
+							</div>
+						</div>
+
+						<div id="gif-preview-wrap" class="media-wrap" hidden>
+							<img id="source-gif-img" class="preview-image" alt="Podgląd źródłowego pliku GIF">
+
+							<div class="trim-box">
+								<div class="trim-header">
+									<span>Zakres klatek</span>
+									<span id="gif-frame-range-label" class="pill">1 – 1</span>
+								</div>
+								<div class="trim-row">
+									<label for="gif-start-frame">Klatka początkowa</label>
+									<input id="gif-start-frame" type="range" min="1" max="1" step="1" value="1">
+								</div>
+								<div class="trim-row">
+									<label for="gif-end-frame">Klatka końcowa</label>
+									<input id="gif-end-frame" type="range" min="1" max="1" step="1" value="1">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel settings-panel">
+						<h3>Ustawienia wyjścia</h3>
+
+						<div class="field">
+							<div class="field-header">
+								<label for="width-input">Szerokość (px)</label>
+								<span id="output-dimensions-badge" class="pill">480 × 270</span>
+							</div>
+							<div class="preset-row">
+								<button class="chip" type="button" data-width="320">320</button>
+								<button class="chip" type="button" data-width="480">480</button>
+								<button class="chip" type="button" data-width="640">640</button>
+								<button class="chip" type="button" data-width="800">800</button>
+								<input id="width-input" class="number-input" type="number" min="16" max="1920" step="2" value="480">
+							</div>
+						</div>
+
+						<div class="field">
+							<div class="field-header">
+								<label for="fps-range">Klatki na sekundę (FPS)</label>
+								<strong id="fps-value">14 FPS</strong>
+							</div>
+							<input id="fps-range" type="range" min="5" max="30" step="1" value="14">
+						</div>
+
+						<div class="field">
+							<div class="field-header">
+								<label for="quality-range">Jakość kolorów</label>
+								<strong id="quality-value">75%</strong>
+							</div>
+							<input id="quality-range" type="range" min="10" max="95" step="5" value="75">
+							<p class="field-hint">Niższa wartość = mniejszy rozmiar pliku (agresywniejsza kwantyzacja palety).</p>
+						</div>
+
+						<div class="field-grid">
+							<div class="field">
+								<label for="speed-select">Prędkość</label>
+								<select id="speed-select" class="select-input">
+									<option value="0.5">0.5× (wolniej)</option>
+									<option value="1" selected>1× (normalna)</option>
+									<option value="1.5">1.5×</option>
+									<option value="2">2× (szybciej)</option>
+								</select>
+							</div>
+
+							<div class="field">
+								<label for="loop-select">Zapętlenie</label>
+								<select id="loop-select" class="select-input">
+									<option value="forever" selected>Nieskończone</option>
+									<option value="1">1× (bez pętli)</option>
+									<option value="2">2×</option>
+									<option value="3">3×</option>
+									<option value="custom">Własne…</option>
+								</select>
+							</div>
+						</div>
+
+						<div id="custom-loop-wrap" class="field" hidden>
+							<label for="custom-loop-input">Liczba odtworzeń (1 – 65536)</label>
+							<input id="custom-loop-input" class="number-input" type="number" min="1" max="65536" value="5">
+						</div>
+
+						<label class="checkbox-field">
+							<input id="bounce-checkbox" type="checkbox">
+							<span>Efekt <strong>Bounce (ping-pong)</strong> — płynne odbicie w tył</span>
+						</label>
+
+						<div class="estimate-row">
+							<span id="estimate-badge" class="muted">Szacowana liczba klatek: —</span>
+						</div>
+
+						<div class="action-row">
+							<button id="convert-btn" class="btn btn-primary" type="button">Konwertuj na GIF</button>
+							<button id="cancel-btn" class="btn btn-danger" type="button" hidden>Anuluj</button>
+						</div>
+
+						<div id="progress-panel" class="progress-panel" hidden>
+							<div class="progress-header">
+								<span id="progress-label">Przetwarzanie…</span>
+								<strong id="progress-percent">0%</strong>
+							</div>
+							<div class="progress-track">
+								<div id="progress-bar-fill" class="progress-fill" style="width: 0%"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<section id="result-card" class="panel result-card" hidden>
+					<div class="result-header">
+						<h3>Gotowy plik GIF</h3>
+						<a id="download-btn" class="btn btn-primary" download="output.gif">Pobierz .gif</a>
+					</div>
+
+					<div class="result-body">
+						<div class="result-preview">
+							<img id="result-gif-img" class="preview-image" alt="Wygenerowany plik GIF">
+						</div>
+						<dl class="stats-grid">
+							<div class="stat-item">
+								<dt>Rozmiar</dt>
+								<dd id="stat-size">—</dd>
+							</div>
+							<div class="stat-item">
+								<dt>Wymiary</dt>
+								<dd id="stat-dimensions">—</dd>
+							</div>
+							<div class="stat-item">
+								<dt>Klatki</dt>
+								<dd id="stat-frames">—</dd>
+							</div>
+							<div class="stat-item">
+								<dt>Czas trwania</dt>
+								<dd id="stat-duration">—</dd>
+							</div>
+						</dl>
+					</div>
+				</section>
+			</section>
+		</main>
+
+		<footer class="app-footer">
+			Napędzane przez <a href="https://github.com/sindresorhus/gifkit" target="_blank" rel="noreferrer">@sindresorhus/gifkit</a> • Zero wysyłania plików na serwer
+		</footer>
+	</div>
+
+	<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
