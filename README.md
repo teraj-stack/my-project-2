@@ -10,6 +10,13 @@ Całe przetwarzanie odbywa się w **100% lokalnie w przeglądarce** (z wykorzyst
 - **Konfiguracja wyjścia:** szerokość z zachowaniem proporcji, FPS (`5–30`), jakość kwantyzacji kolorów (`10%–95%`), prędkość (`0.5×–2×`), liczba powtórzeń (`forever` lub własna) oraz tryb **Bounce (ping-pong)**.
 - **Płynny interfejs:** kodowanie w dedykowanym Web Workerze z paskiem postępu i możliwością anulowania.
 
+## Design System & Stitch Skills
+- System designu projektu opisany jest w [`.stitch/DESIGN.md`](.stitch/DESIGN.md) (opracowany według wytycznych skilla `taste-design`).
+- Repozytorium zawiera zainstalowane pluginy [`google-labs-code/stitch-skills`](https://github.com/google-labs-code/stitch-skills) w katalogu `.agents/plugins/`:
+  - `stitch-design`
+  - `stitch-build`
+  - `stitch-utilities`
+
 ## Uruchomienie lokalne
 
 Wymagany Node.js `>= 22`.

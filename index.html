@@ -4,16 +4,24 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>gifkit Studio — Wideo na GIF w przeglądarce</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/src/styles.css">
 </head>
 <body>
 	<div class="app-shell">
 		<header class="app-header">
 			<div class="brand">
-				<span class="brand-badge" aria-hidden="true">GIF</span>
+				<span class="brand-mark" aria-hidden="true">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<rect x="2" y="4" width="20" height="16" rx="2.5"></rect>
+						<path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"></path>
+					</svg>
+				</span>
 				<div>
 					<h1>gifkit Studio</h1>
-					<p class="subtitle">Konwerter Wideo → GIF i optymalizator GIF działający w 100% lokalnie w przeglądarce</p>
+					<p class="subtitle">Lokalny konwerter Wideo → GIF i optymalizator GIF oparty na @sindresorhus/gifkit</p>
 				</div>
 			</div>
 
@@ -30,9 +38,24 @@
 		<main class="main-content">
 			<section id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Wybierz lub przeciągnij plik">
 				<input id="file-input" type="file" accept="video/*,.mp4,.webm,.mov,.m4v" hidden>
-				<div class="dropzone-icon" aria-hidden="true">🎬</div>
-				<h2 id="dropzone-title">Przeciągnij plik wideo tutaj</h2>
-				<p id="dropzone-subtitle">lub kliknij, aby wybrać (.mp4, .webm, .mov) — plik nie opuszcza Twojego urządzenia</p>
+				<div class="dropzone-layout">
+					<div class="dropzone-visual" aria-hidden="true">
+						<svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+							<rect x="4" y="9" width="40" height="30" rx="5" stroke="currentColor" stroke-width="2"></rect>
+							<path d="M13 9V39M35 9V39M4 17H13M35 17H44M4 24H13M35 24H44M4 31H13M35 31H44" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.55"></path>
+							<path d="M21.5 19.5L29 24L21.5 28.5V19.5Z" fill="currentColor"></path>
+						</svg>
+					</div>
+					<div class="dropzone-copy">
+						<h2 id="dropzone-title">Przeciągnij plik wideo tutaj</h2>
+						<p id="dropzone-subtitle">lub kliknij, aby wybrać (.mp4, .webm, .mov) — całe przetwarzanie odbywa się w przeglądarce</p>
+					</div>
+					<div class="dropzone-specs" aria-hidden="true">
+						<span class="spec-tag">100% OFFLINE</span>
+						<span class="spec-tag">WEB WORKER</span>
+						<span class="spec-tag">GIF89A</span>
+					</div>
+				</div>
 			</section>
 
 			<div id="error-banner" class="error-banner" role="alert" hidden></div>
@@ -41,29 +64,38 @@
 				<div class="workspace-topbar">
 					<div class="file-summary">
 						<strong id="file-name">video.mp4</strong>
-						<span id="file-meta" class="muted"></span>
+						<span id="file-meta" class="mono muted"></span>
 					</div>
 					<button id="change-file-btn" class="btn btn-secondary" type="button">Zmień plik</button>
 				</div>
 
 				<div class="workspace-grid">
 					<div class="panel preview-panel">
-						<h3>Podgląd źródła</h3>
+						<div class="panel-heading">
+							<h3>Podgląd źródła</h3>
+							<span class="panel-tag">ŹRÓDŁO</span>
+						</div>
 
 						<div id="video-preview-wrap" class="media-wrap">
 							<video id="source-video" controls playsinline muted></video>
 
 							<div class="trim-box">
 								<div class="trim-header">
-									<span>Przycinanie zakresu</span>
-									<span id="trim-duration-label" class="pill">0:00.0</span>
+									<span>Zakres cięcia</span>
+									<span id="trim-duration-label" class="pill mono">0:00.0</span>
 								</div>
 								<div class="trim-row">
-									<label for="trim-start-range">Start: <strong id="trim-start-label">0:00.0</strong></label>
+									<div class="trim-row-head">
+										<label for="trim-start-range">Start</label>
+										<strong id="trim-start-label" class="mono">0:00.0</strong>
+									</div>
 									<input id="trim-start-range" type="range" min="0" max="10" step="0.1" value="0">
 								</div>
 								<div class="trim-row">
-									<label for="trim-end-range">Koniec: <strong id="trim-end-label">0:00.0</strong></label>
+									<div class="trim-row-head">
+										<label for="trim-end-range">Koniec</label>
+										<strong id="trim-end-label" class="mono">0:00.0</strong>
+									</div>
 									<input id="trim-end-range" type="range" min="0" max="10" step="0.1" value="10">
 								</div>
 							</div>
@@ -75,7 +107,7 @@
 							<div class="trim-box">
 								<div class="trim-header">
 									<span>Zakres klatek</span>
-									<span id="gif-frame-range-label" class="pill">1 – 1</span>
+									<span id="gif-frame-range-label" class="pill mono">1 – 1</span>
 								</div>
 								<div class="trim-row">
 									<label for="gif-start-frame">Klatka początkowa</label>
@@ -90,26 +122,29 @@
 					</div>
 
 					<div class="panel settings-panel">
-						<h3>Ustawienia wyjścia</h3>
+						<div class="panel-heading">
+							<h3>Parametry eksportu</h3>
+							<span class="panel-tag">WYJŚCIE</span>
+						</div>
 
 						<div class="field">
 							<div class="field-header">
 								<label for="width-input">Szerokość (px)</label>
-								<span id="output-dimensions-badge" class="pill">480 × 270</span>
+								<span id="output-dimensions-badge" class="pill mono">480 × 270</span>
 							</div>
 							<div class="preset-row">
-								<button class="chip" type="button" data-width="320">320</button>
-								<button class="chip" type="button" data-width="480">480</button>
-								<button class="chip" type="button" data-width="640">640</button>
-								<button class="chip" type="button" data-width="800">800</button>
-								<input id="width-input" class="number-input" type="number" min="16" max="1920" step="2" value="480">
+								<button class="chip mono" type="button" data-width="320">320</button>
+								<button class="chip mono" type="button" data-width="480">480</button>
+								<button class="chip mono" type="button" data-width="640">640</button>
+								<button class="chip mono" type="button" data-width="800">800</button>
+								<input id="width-input" class="number-input mono" type="number" min="16" max="1920" step="2" value="480">
 							</div>
 						</div>
 
 						<div class="field">
 							<div class="field-header">
 								<label for="fps-range">Klatki na sekundę (FPS)</label>
-								<strong id="fps-value">14 FPS</strong>
+								<strong id="fps-value" class="mono">14 FPS</strong>
 							</div>
 							<input id="fps-range" type="range" min="5" max="30" step="1" value="14">
 						</div>
@@ -117,10 +152,10 @@
 						<div class="field">
 							<div class="field-header">
 								<label for="quality-range">Jakość kolorów</label>
-								<strong id="quality-value">75%</strong>
+								<strong id="quality-value" class="mono">75%</strong>
 							</div>
 							<input id="quality-range" type="range" min="10" max="95" step="5" value="75">
-							<p class="field-hint">Niższa wartość = mniejszy rozmiar pliku (agresywniejsza kwantyzacja palety).</p>
+							<p class="field-hint">Niższa wartość zmniejsza rozmiar pliku poprzez agresywniejszą kwantyzację palety.</p>
 						</div>
 
 						<div class="field-grid">
@@ -148,16 +183,16 @@
 
 						<div id="custom-loop-wrap" class="field" hidden>
 							<label for="custom-loop-input">Liczba odtworzeń (1 – 65536)</label>
-							<input id="custom-loop-input" class="number-input" type="number" min="1" max="65536" value="5">
+							<input id="custom-loop-input" class="number-input mono" type="number" min="1" max="65536" value="5">
 						</div>
 
 						<label class="checkbox-field">
 							<input id="bounce-checkbox" type="checkbox">
-							<span>Efekt <strong>Bounce (ping-pong)</strong> — płynne odbicie w tył</span>
+							<span>Tryb <strong>Bounce (ping-pong)</strong> — płynne odbicie w tył</span>
 						</label>
 
 						<div class="estimate-row">
-							<span id="estimate-badge" class="muted">Szacowana liczba klatek: —</span>
+							<span id="estimate-badge" class="mono muted">Szacowana liczba klatek: —</span>
 						</div>
 
 						<div class="action-row">
@@ -168,7 +203,7 @@
 						<div id="progress-panel" class="progress-panel" hidden>
 							<div class="progress-header">
 								<span id="progress-label">Przetwarzanie…</span>
-								<strong id="progress-percent">0%</strong>
+								<strong id="progress-percent" class="mono">0%</strong>
 							</div>
 							<div class="progress-track">
 								<div id="progress-bar-fill" class="progress-fill" style="width: 0%"></div>
@@ -179,7 +214,10 @@
 
 				<section id="result-card" class="panel result-card" hidden>
 					<div class="result-header">
-						<h3>Gotowy plik GIF</h3>
+						<div>
+							<h3>Gotowy plik GIF</h3>
+							<p class="field-hint">Sprawdź podgląd i parametry przed pobraniem.</p>
+						</div>
 						<a id="download-btn" class="btn btn-primary" download="output.gif">Pobierz .gif</a>
 					</div>
 
@@ -190,19 +228,19 @@
 						<dl class="stats-grid">
 							<div class="stat-item">
 								<dt>Rozmiar</dt>
-								<dd id="stat-size">—</dd>
+								<dd id="stat-size" class="mono">—</dd>
 							</div>
 							<div class="stat-item">
 								<dt>Wymiary</dt>
-								<dd id="stat-dimensions">—</dd>
+								<dd id="stat-dimensions" class="mono">—</dd>
 							</div>
 							<div class="stat-item">
 								<dt>Klatki</dt>
-								<dd id="stat-frames">—</dd>
+								<dd id="stat-frames" class="mono">—</dd>
 							</div>
 							<div class="stat-item">
 								<dt>Czas trwania</dt>
-								<dd id="stat-duration">—</dd>
+								<dd id="stat-duration" class="mono">—</dd>
 							</div>
 						</dl>
 					</div>
@@ -211,7 +249,7 @@
 		</main>
 
 		<footer class="app-footer">
-			Napędzane przez <a href="https://github.com/sindresorhus/gifkit" target="_blank" rel="noreferrer">@sindresorhus/gifkit</a> • Zero wysyłania plików na serwer
+			Napędzane przez <a href="https://github.com/sindresorhus/gifkit" target="_blank" rel="noreferrer">@sindresorhus/gifkit</a> • Przetwarzanie wyłącznie po stronie klienta
 		</footer>
 	</div>
 
